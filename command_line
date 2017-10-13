@@ -1,0 +1,6 @@
+python visualize_detection_result.py --image=test_data --det=model/model.ckpt-136750/test/icdar2015_test/model.ckpt-136750/seg_link_conf_th_0.800000_0.500000/txt --output=output
+
+python eval_seglink.py --checkpoint_path=./train_dir/model.ckpt-300000 --dataset_name=icdar2015 --dataset_split_name=test --dataset_dir=./tf_records
+
+
+python train_ssd_network.py      --train_dir=./logs/     --dataset_dir=./tfrecords/   --dataset_name=pascalvoc_2007     --dataset_split_name=train    --model_name=ssd_300_vgg     CHECKPOINT_PATH=./checkpoints/ssd_300_vgg.ckpt/ssd_300_vgg.ckpt   --save_summaries_secs=60     --save_interval_secs=600     --weight_decay=0.0005    --optimizer=adagrad    --learning_rate=0.001      --batch_size=8 --max_number_of_steps=120000
