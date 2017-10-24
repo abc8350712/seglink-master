@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/Downloads/SSD-Tensorflow-master/.idea/SSD-Tensorflow-master.iml" filepath="$USER_HOME$/Downloads/SSD-Tensorflow-master/.idea/SSD-Tensorflow-master.iml" />
+      <module fileurl="file://$USER_HOME$/PycharmProjects/Tensorflow/.idea/Tensorflow.iml" filepath="$USER_HOME$/PycharmProjects/Tensorflow/.idea/Tensorflow.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/seglink-master.iml" filepath="$PROJECT_DIR$/.idea/seglink-master.iml" />
     </modules>
   </component>

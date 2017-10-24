@@ -34,7 +34,7 @@ global link_conf_threshold
 
 anchor_offset = 0.5    
 anchor_scale_gamma = 1.5
-feat_layers = ['conv4_3','fc7', 'conv6_2', 'conv7_2', 'conv8_2', 'conv9_2']
+feat_layers = ['conv4_3', 'fc7', 'conv6_2', 'conv7_2', 'conv8_2', 'conv9_2']
 # feat_norms = [20] + [-1] * len(feat_layers)
 max_height_ratio = 1.5
 # prior_scaling = [0.1, 0.2, 0.1, 0.2, 20.0]
@@ -82,7 +82,7 @@ def _build_anchor_map():
         default_anchor_map[(int(anchor[1]), int(anchor[0]))].append(anchor_idx)
     default_anchor_center_set = set(default_anchor_map.keys())
     
-def init_config(image_shape, batch_size = 1, 
+def init_config(image_shape, batch_size = None,
                 weight_decay = 0.0005, 
                 num_gpus = 1, 
                 train_with_ignored = False,
@@ -97,7 +97,7 @@ def init_config(image_shape, batch_size = 1,
     h, w = image_shape
     from nets import anchor_layer
     from nets import seglink_symbol
-    fake_image = tf.ones((1, h, w, 3))
+    fake_image = tf.ones((batch_size, h, w, 3))
     fake_net = seglink_symbol.SegLinkNet(inputs = fake_image, weight_decay = weight_decay)
     feat_shapes = fake_net.get_shapes();
     

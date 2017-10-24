@@ -253,7 +253,7 @@ def eval(dataset):
             master = '',
             eval_op=list(names_to_updates.values()),
             variables_to_restore=variables_to_restore,
-            num_evals=2,#dataset.num_samples,
+            num_evals=500,#dataset.num_samples,
             checkpoint_path = FLAGS.checkpoint_path,
             logdir = logdir,
             session_config=sess_config)

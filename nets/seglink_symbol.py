@@ -68,6 +68,28 @@ class SegLinkNet(object):
         net = slim.conv2d(net, 256, [3, 3], stride=2, scope='conv9_2', padding='SAME')
         end_points['conv9_2'] = net
 
+        #add FPN
+        '''
+        resize_conv9 = tf.image.resize_bilinear(end_points['conv9_2'], (4, 4))
+        resize_conv9 = slim.conv2d(resize_conv9, 256, [1, 1])
+        end_points['conv8_2'] = tf.add(end_points['conv8_2'], resize_conv9)
+
+        resize_conv8 = tf.image.resize_bilinear(end_points['conv8_2'], (8, 8))
+        resize_conv8 = slim.conv2d(resize_conv8, 256, [1, 1])
+        end_points['conv7_2'] = tf.add(end_points['conv7_2'], resize_conv8)
+
+        resize_conv7 = tf.image.resize_bilinear(end_points['conv7_2'], (16, 16))
+        resize_conv7 = slim.conv2d(resize_conv7, 512, [1, 1])
+        end_points['conv6_2'] = tf.add(end_points['conv6_2'], resize_conv7)
+
+        # NO GRADIENTS
+        # resize_conv6 = tf.image.resize_bilinear(end_points['conv6_2'], (32, 32))
+        # resize_conv6 = slim.conv2d(resize_conv6, 512, [1, 1])
+        # end_points['conv5_3'] = tf.add(end_points['conv5_3'], resize_conv6)
+
+        '''
+
+
 
         
 #         net = slim.conv2d(net, 128, [1, 1], scope='conv10_1')
@@ -128,7 +150,7 @@ class SegLinkNet(object):
             all_seg_offsets.append(seg_offsets)
             all_within_layer_link_scores.append(within_layer_link_scores)
             all_cross_layer_link_scores.append(cross_layer_link_scores)
-            
+
         self.seg_score_logits = reshape_and_concat(all_seg_scores) # (batch_size, N, 2)
         self.seg_scores = slim.softmax(self.seg_score_logits) # (batch_size, N, 2)
         self.seg_offsets = reshape_and_concat(all_seg_offsets) # (batch_size, N, 5)
@@ -185,8 +207,14 @@ class SegLinkNet(object):
         def OHNM_batch(neg_conf, pos_mask, neg_mask):
             selected_neg_mask = []
             for image_idx in xrange(batch_size):
+
+                #error ('neg_conf:', <tf.Tensor 'clone_0/strided_slice:0' shape=(1, 5460) dtype=float32>, 'image_idx', 0)
+                #('neg_conf:', <tf.Tensor 'clone_0/strided_slice:0' shape=(1, 5460) dtype=float32>, 'image_idx', 1)
+
                 image_neg_conf = neg_conf[image_idx, :]
+
                 image_neg_mask = neg_mask[image_idx, :]
+
                 image_pos_mask = pos_mask[image_idx, :]
                 n_pos = tf.reduce_sum(tf.cast(image_pos_mask, tf.int32))
                 selected_neg_mask.append(OHNM_single_image(image_neg_conf, n_pos, image_neg_mask))
@@ -199,6 +227,7 @@ class SegLinkNet(object):
         # OHNM on segments
         seg_neg_scores = self.seg_scores[:, :, 0]
         seg_pos_mask, seg_neg_mask = get_pos_and_neg_masks(seg_labels)
+
         seg_selected_mask = OHNM_batch(seg_neg_scores, seg_pos_mask, seg_neg_mask)
         n_seg_pos = tf.reduce_sum(tf.cast(seg_pos_mask, tf.float32))
         
@@ -231,7 +260,7 @@ class SegLinkNet(object):
                 sub_loc_losses = []
                 from tensorflow.python.ops import control_flow_ops
                 for idx, name in enumerate(names):
-                    name_loss = smooth_l1_loss(self.seg_offsets[:, :, idx], seg_offsets[:,:, idx], seg_pos_mask) * config.seg_loc_loss_weight / n_seg_pos 
+                    name_loss = smooth_l1_loss(self.seg_offsets[:, :, idx], seg_offsets[:, :, idx], seg_pos_mask) * config.seg_loc_loss_weight / n_seg_pos
                     name_loss = tf.identity(name_loss, name = name)
                     if do_summary:
                         tf.summary.scalar(name, name_loss)

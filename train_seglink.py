@@ -83,7 +83,7 @@ def config_initialization():
     tf.logging.set_verbosity(tf.logging.DEBUG)
     util.init_logger(log_file = 'log_train_seglink_%d_%d.log'%image_shape, log_path = FLAGS.train_dir, stdout = False, mode = 'a')
     
-    
+    #Init some config,not need to pay too much attention
     config.init_config(image_shape, 
                        batch_size = FLAGS.batch_size, 
                        weight_decay = FLAGS.weight_decay, 
@@ -100,6 +100,7 @@ def config_initialization():
     tf.summary.scalar('batch_size_per_gpu', batch_size_per_gpu)
 
     #util.proc.set_proc_name(FLAGS.model_name + '_' + FLAGS.dataset_name)
+    #Stpe 1: create dataset by xiaodong
     dataset = dataset_factory.get_dataset(FLAGS.dataset_name, FLAGS.dataset_split_name, FLAGS.dataset_dir)
     config.print_config(FLAGS, dataset)
     return dataset
@@ -216,6 +217,7 @@ def create_clones(batch_queue):
     
     # add all gradients together
     # note that the gradients do not need to be averaged, because the average operation has been done on loss.
+
     averaged_gradients = sum_gradients(gradients)
     
     update_op = optimizer.apply_gradients(averaged_gradients, global_step=global_step)
@@ -252,9 +254,9 @@ def train(train_op):
             logdir = FLAGS.train_dir,
             init_fn = init_fn,
             summary_op = summary_op,
-            number_of_steps = 400000,#, FLAGS.max_number_of_steps,
+            number_of_steps = 500000,#, FLAGS.max_number_of_steps,
             log_every_n_steps = FLAGS.log_every_n_steps,
-            save_summaries_secs = 60,
+            save_summaries_secs = 60000,
             saver = saver,
             save_interval_secs = 1200,
             session_config = sess_config

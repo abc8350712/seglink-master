@@ -44,8 +44,8 @@ tf.app.flags.DEFINE_string('dataset_dir',
            'The directory where the dataset files are stored.')
 tf.app.flags.DEFINE_string(
     'model_name', 'seglink_vgg', 'The name of the architecture to train.')
-tf.app.flags.DEFINE_integer('eval_image_width', 1280, 'Train image size')
-tf.app.flags.DEFINE_integer('eval_image_height', 768, 'Train image size')
+tf.app.flags.DEFINE_integer('eval_image_width', 512, 'Train image size')
+tf.app.flags.DEFINE_integer('eval_image_height', 512, 'Train image size')
 
 
 FLAGS = tf.app.flags.FLAGS
